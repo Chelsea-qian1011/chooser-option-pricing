@@ -191,3 +191,4 @@ __marimo__/
 .idea/
 __pycache__/
 *.pyc
+_archive/
