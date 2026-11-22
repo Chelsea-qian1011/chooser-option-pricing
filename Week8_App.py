@@ -53,7 +53,34 @@ PRESETS = {
 # Sidebar - market state
 # ---------------------------------------------------------------------------
 st.sidebar.title("Market state")
-preset_name = st.sidebar.selectbox("Scenario preset", list(PRESETS.keys()), index=0)
+
+# The 10 GBDT features alone do not move the BSM price, so each preset also
+# pins sigma. "Custom" leaves whatever the user has typed in place.
+PRESET_SIGMA = {
+    "Normal market": float(config.sigma),
+    "High-volatility stress": 0.50,
+    "Black swan (COVID-style)": 0.80,
+    "Custom": None,
+}
+
+if "sigma" not in st.session_state:
+    st.session_state["sigma"] = float(config.sigma)
+
+
+def _apply_preset():
+    target = PRESET_SIGMA.get(st.session_state["preset"])
+    if target is not None:
+        st.session_state["sigma"] = target
+
+
+preset_name = st.sidebar.selectbox(
+    "Scenario preset",
+    list(PRESETS.keys()),
+    index=0,
+    key="preset",
+    on_change=_apply_preset,
+    help="Normal 20% / stress 50% / black swan 80% volatility.",
+)
 
 st.sidebar.subheader("Contract parameters")
 S = st.sidebar.number_input("Spot price S ($)", min_value=1.0, value=150.0, step=1.0)
@@ -61,7 +88,7 @@ K = st.sidebar.number_input("Strike K ($)", min_value=1.0, value=float(config.K)
 T1 = st.sidebar.number_input("Choice date T1 (years)", min_value=0.01, value=float(config.T1), step=0.05)
 T2 = st.sidebar.number_input("Maturity T2 (years)", min_value=float(T1) + 0.01, value=float(config.T2), step=0.05)
 r = st.sidebar.number_input("Risk-free rate r", min_value=0.0, max_value=0.30, value=float(config.r), step=0.005, format="%.3f")
-sigma = st.sidebar.number_input("Volatility sigma", min_value=0.01, max_value=2.00, value=float(config.sigma), step=0.01, format="%.2f")
+sigma = st.sidebar.number_input("Volatility sigma", min_value=0.01, max_value=2.00, step=0.01, format="%.2f", key="sigma")
 
 base_features = dict(PRESETS[preset_name])
 linked = st.sidebar.checkbox(

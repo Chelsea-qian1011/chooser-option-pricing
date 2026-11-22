@@ -115,17 +115,19 @@ streamlit run Week8_App.py
 浏览器打开后可以看到四个标签页：
 
 - **Pricing**：输入 S、K、T1、T2、r、σ，得到 BSM 价格、GBDT 修正后价格、修正边际及其占比。
-- **Sensitivity**：拖动波动率与标的价格，查看价格曲线。
+- **Sensitivity**：查看价格随波动率、标的价格变化的曲线，以及修正边际曲线。
 - **Model diagnostics**：模型训练输出区间、特征分位数、越界情况。
 - **About**：方法说明与指标口径。
 
 侧边栏提供三种预设：
 
-| 预设 | 参数 | 特征 |
-|---|---|---|
-| Normal market | S=K=150，T1=0.5，T2=1.0，r=5%，σ=20% | 常规水平 |
-| High-volatility stress | σ=50% | 波动率与 VIX 同步抬升 |
-| Black swan (COVID-style) | S=100，σ=80%，r=1% | 单日急跌、VIX 跳升、相关性反转 |
+| 预设 | 参数 | 特征 | BSM 价格 |
+|---|---|---|---|
+| Normal market | S=K=150，T1=0.5，T2=1.0，r=5%，σ=20% | 常规水平 | 20.78 |
+| High-volatility stress | σ=50% | 波动率与 VIX 同步抬升 | 49.77 |
+| Black swan (COVID-style) | σ=80% | 单日急跌、VIX 跳升、相关性反转 | 78.29 |
+
+预设会同时设定 σ 与 10 个市场特征；选 “Custom” 则保留当前手动输入的取值。
 
 勾选 “Link market features to sigma and spot” 后，特征会随参数联动；取消勾选可手动编辑 10 个特征。
 
